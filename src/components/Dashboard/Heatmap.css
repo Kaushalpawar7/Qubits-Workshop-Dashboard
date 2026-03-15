@@ -1,0 +1,126 @@
+.github-full-card {
+    padding: 24px;
+    grid-column: 1 / -1;
+    background: #fff;
+}
+
+.github-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.github-labels-y {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px 0 4px;
+    font-size: 0.65rem;
+    color: #94a3b8;
+    height: 100px;
+}
+
+.github-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-x: auto;
+}
+
+.github-labels-x {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    padding-left: 2px;
+}
+
+.github-matrix {
+    display: flex;
+    gap: 3px;
+}
+
+.github-week {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.github-cell {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    background: #ebedf0;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.1s, outline 0.1s;
+}
+
+.github-cell:hover {
+    transform: scale(1.4);
+    z-index: 10;
+    outline: 2px solid #3b82f6;
+}
+
+.level-0 {
+    background: #ebedf0;
+}
+
+.level-1 {
+    background: #9be9a8;
+}
+
+.level-2 {
+    background: #40c463;
+}
+
+.level-3 {
+    background: #30a14e;
+}
+
+.level-4 {
+    background: #216e39;
+}
+
+.github-cell .tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    white-space: nowrap;
+    margin-bottom: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.github-cell:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.github-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.legend-cells {
+    display: flex;
+    gap: 3px;
+}
+
+.legend-cells .cell {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+}

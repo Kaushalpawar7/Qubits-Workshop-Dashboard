@@ -1,0 +1,166 @@
+.live-feed-card {
+    padding: 24px;
+    grid-column: 1 / -1;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.feed-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.pulse-icon {
+    width: 40px;
+    height: 40px;
+    background: #eff6ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-pulse {
+    color: #3b82f6;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+}
+
+.feed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.feed-item-v2 {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: popOut 0.4s ease-out backwards;
+}
+
+@keyframes popOut {
+    0% {
+        transform: scale(0.9) translateY(10px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.feed-item-v2:hover {
+    transform: translateX(4px) scale(1.01);
+    border-color: #e2e8f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.status-indicator-v2 {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.status-indicator-v2.entry {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+.status-indicator-v2.exit {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.feed-content-v2 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-info-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.student-name-v2 {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+.action-row-v2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-badge-v2 {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.status-badge-v2.entry {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge-v2.exit {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.subject-text-v2 {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.time-row-v2 {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+}
+
+.feed-decor-v2 {
+    display: flex;
+    align-items: center;
+    opacity: 0.2;
+    transition: opacity 0.2s;
+}
+
+.feed-item-v2:hover .feed-decor-v2 {
+    opacity: 1;
+    color: #3b82f6;
+}

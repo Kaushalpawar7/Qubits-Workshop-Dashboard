@@ -1,0 +1,48 @@
+.App {
+    min-height: 100vh;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.profile-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.profile-phone {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.loader {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+        text-shadow: 0 0 20px var(--primary-neon);
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
