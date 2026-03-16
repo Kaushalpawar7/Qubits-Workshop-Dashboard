@@ -112,7 +112,13 @@ function App() {
   return (
     <div className="layout-container">
       <Sidebar
-        onLogout={() => supabase.auth.signOut()}
+        onLogout={async () => {
+          await supabase.auth.signOut();
+          sessionStorage.clear();
+          setDbConfigured(false);
+          setRecords([]);
+          setAnalytics([]);
+        }}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
@@ -180,8 +186,10 @@ function App() {
                   className="btn btn-primary"
                   style={{ background: '#ef4444', justifyContent: 'center' }}
                   onClick={() => {
-                    sessionStorage.removeItem('firebase_url');
+                    sessionStorage.clear();
                     setDbConfigured(false);
+                    setRecords([]);
+                    setAnalytics([]);
                   }}
                 >
                   Disconnect & Reset
