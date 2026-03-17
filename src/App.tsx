@@ -7,15 +7,21 @@ import { AnalyticsCharts } from './components/Dashboard/AnalyticsCharts';
 import { AttendanceHeatmap } from './components/Dashboard/AttendanceHeatmap';
 import { InteractiveStats } from './components/Dashboard/InteractiveStats';
 import { LiveFeed } from './components/Dashboard/LiveFeed';
-import { supabase } from './services/supabase';
 import { setupFirebaseListener } from './services/FirebaseService';
 import { generateHistoricalData, calculateAnalytics } from './services/DataEngine';
 import type { AttendanceRecord, SubjectAnalytics } from './types';
 import './index.css';
 
 function App() {
-  const [session, setSession] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [session, setSession] = React.useState<{ fullName: string; teamName: string } | null>(
+    sessionStorage.getItem('user_full_name')
+      ? {
+        fullName: sessionStorage.getItem('user_full_name') || '',
+        teamName: sessionStorage.getItem('user_team_name') || ''
+      }
+      : null
+  );
+
   const [activeTab, setActiveTab] = React.useState('dashboard');
   const [dbConfigured, setDbConfigured] = React.useState(!!sessionStorage.getItem('firebase_url'));
 
@@ -23,26 +29,11 @@ function App() {
   const [analytics, setAnalytics] = React.useState<SubjectAnalytics[]>([]);
 
   React.useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  React.useEffect(() => {
     if (session && dbConfigured) {
       const url = sessionStorage.getItem('firebase_url') || '';
       const key = sessionStorage.getItem('firebase_key') || '';
 
-      const historical = generateHistoricalData(session.user.user_metadata.full_name);
+      const historical = generateHistoricalData(session.fullName);
       setRecords(historical);
       setAnalytics(calculateAnalytics(historical));
 
@@ -50,7 +41,7 @@ function App() {
         const transformed: AttendanceRecord[] = liveRecords.map(item => ({
           id: item.id || `live-${Date.now()}-${Math.random()}`,
           timestamp: typeof item.Timestamp === 'number' ? new Date(item.Timestamp).toISOString() : (item.timestamp || new Date().toISOString()),
-          studentName: item.Name || item.firebase_name || session.user.user_metadata.full_name,
+          studentName: item.Name || item.firebase_name || session.fullName,
           subject: item.subject || 'Workshop Activity',
           type: item.status_normalized || 'entry',
         }));
@@ -93,16 +84,8 @@ function App() {
     }
   }, [session, dbConfigured]);
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loader">LOADING...</div>
-      </div>
-    );
-  }
-
   if (!session) {
-    return <Auth onSuccess={() => { }} />;
+    return <Auth onSuccess={(userData) => setSession(userData)} />;
   }
 
   if (!dbConfigured) {
@@ -112,9 +95,9 @@ function App() {
   return (
     <div className="layout-container">
       <Sidebar
-        onLogout={async () => {
-          await supabase.auth.signOut();
+        onLogout={() => {
           sessionStorage.clear();
+          setSession(null);
           setDbConfigured(false);
           setRecords([]);
           setAnalytics([]);
@@ -135,11 +118,11 @@ function App() {
           </div>
           <div style={{ padding: '8px 16px', borderRadius: '99px', display: 'flex', alignItems: 'center', gap: '12px', background: 'white', border: '1px solid #e2e8f0', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)' }}>
             <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
-              {session.user.user_metadata.full_name?.[0]}
+              {session.fullName?.[0]}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{session.user.user_metadata.full_name}</span>
-              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{session.user.user_metadata.phone}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{session.fullName}</span>
+              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{session.teamName}</span>
             </div>
           </div>
         </header>
@@ -149,10 +132,10 @@ function App() {
             <>
               <div className="welcome-banner glass-card">
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '4px' }}>
-                  Welcome back, {session.user.user_metadata.team_name || 'Team Qubits'}! 👋
+                  Welcome back, {session.teamName || 'Team Qubits'}! 👋
                 </h2>
                 <p style={{ color: '#64748b', fontSize: '0.875rem' }}>
-                  Tracking attendance for <strong>{session.user.user_metadata.full_name || 'your'}</strong> workshop.
+                  Tracking attendance for <strong>{session.fullName || 'your'}</strong> workshop.
                 </p>
               </div>
 
@@ -186,7 +169,8 @@ function App() {
                   className="btn btn-primary"
                   style={{ background: '#ef4444', justifyContent: 'center' }}
                   onClick={() => {
-                    sessionStorage.clear();
+                    sessionStorage.removeItem('firebase_url');
+                    sessionStorage.removeItem('firebase_key');
                     setDbConfigured(false);
                     setRecords([]);
                     setAnalytics([]);
